@@ -53,6 +53,7 @@ kotlin {
             implementation(libs.multiplatformSettings)
             implementation(libs.kotlinx.datetime)
             implementation(libs.materialKolor)
+            implementation(libs.material.icons.extended)
         }
 
         commonTest.dependencies {
@@ -88,7 +89,7 @@ android {
 
         applicationId = "ru.vlyashuk.mapnotes.androidApp"
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
