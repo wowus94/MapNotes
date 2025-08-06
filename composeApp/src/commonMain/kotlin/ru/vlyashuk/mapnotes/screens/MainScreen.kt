@@ -1,76 +1,98 @@
 package ru.vlyashuk.mapnotes.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import mapnotes.composeapp.generated.resources.IndieFlower_Regular
-import mapnotes.composeapp.generated.resources.Res
-import mapnotes.composeapp.generated.resources.ic_dark_mode
-import mapnotes.composeapp.generated.resources.ic_light_mode
-import mapnotes.composeapp.generated.resources.map_notes
-import mapnotes.composeapp.generated.resources.theme
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
-import ru.vlyashuk.mapnotes.theme.LocalThemeIsDark
+import ru.vlyashuk.mapnotes.data.ItemNotes
+import ru.vlyashuk.mapnotes.ui_items.NoteCard
 
 @Composable
 fun MainScreen() {
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    val note = ItemNotes(
+        id = 1,
+        title = "Дом",
+        coordinates = "55.7558, 37.6173",
+        description = "Это моя точка на карте, где находится дом"
+    )
+
+    Scaffold(
+        floatingActionButton = {
+            CustomFloatingActionButton(
+                visible = true,
+                onClick = { /*TODO*/ },
+            )
+        }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing)
-                .padding(16.dp),
+                .background(color = MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = stringResource(Res.string.map_notes),
-                fontFamily = FontFamily(Font(Res.font.IndieFlower_Regular)),
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = 32.sp,
-            )
-
-            var isDark by LocalThemeIsDark.current
-            val icon = remember(isDark) {
-                if (isDark) Res.drawable.ic_light_mode
-                else Res.drawable.ic_dark_mode
-            }
-
-            ElevatedButton(
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    .widthIn(min = 200.dp),
-                onClick = { isDark = !isDark },
-                content = {
-                    Icon(vectorResource(icon), contentDescription = null)
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(stringResource(Res.string.theme))
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    NoteCard(note = note)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CustomFloatingActionButton(
+    visible: Boolean,
+    onClick: () -> Unit
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn() + scaleIn(),
+        exit = fadeOut() + scaleOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .graphicsLayer {
+                    shadowElevation = 6.dp.toPx()
+                    shape = RoundedCornerShape(100)
+                    clip = true
+                }
+                .background(MaterialTheme.colorScheme.primary)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    onClick()
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Добавить точку",
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
