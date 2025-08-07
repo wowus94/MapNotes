@@ -27,9 +27,9 @@ fun BottomNavigationBar(
     currentRoute: String?
 ) {
     val bottomNavItems = listOf(
-        BarItem(BottomNavDestination.Main, "Главная", Icons.Filled.Home),
-        BarItem(BottomNavDestination.Map, "Карта", Icons.Filled.Map),
-        BarItem(BottomNavDestination.Profile, "Профиль", Icons.Filled.AccountCircle),
+        BarItem(NavDestination.Main, "Главная", Icons.Filled.Home),
+        BarItem(NavDestination.Map, "Карта", Icons.Filled.Map),
+        BarItem(NavDestination.Profile, "Профиль", Icons.Filled.AccountCircle),
     )
 
 

@@ -1,4 +1,4 @@
-package ru.vlyashuk.mapnotes.screens
+package ru.vlyashuk.mapnotes.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,12 +8,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ProfileScreen() {
+fun MapScreen() {
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "Profile")
+        Text(text = "Map")
     }
 }

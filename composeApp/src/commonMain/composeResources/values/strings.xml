@@ -1,4 +1,10 @@
 <resources>
     <string name="map_notes">Map Notes</string>
     <string name="theme">Theme</string>
+    <string name="add_notes">Добавить точку</string>
+    <string name="title">Название</string>
+    <string name="coordinates">Координаты</string>
+    <string name="description">Описание</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отменить</string>
 </resources>

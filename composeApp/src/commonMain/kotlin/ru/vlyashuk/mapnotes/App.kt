@@ -5,23 +5,28 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ru.vlyashuk.mapnotes.navigation.BottomNavDestination
 import ru.vlyashuk.mapnotes.navigation.BottomNavigationBar
-import ru.vlyashuk.mapnotes.screens.MainScreen
-import ru.vlyashuk.mapnotes.screens.MapScreen
-import ru.vlyashuk.mapnotes.screens.ProfileScreen
+import ru.vlyashuk.mapnotes.navigation.NavDestination
 import ru.vlyashuk.mapnotes.theme.AppTheme
+import ru.vlyashuk.mapnotes.ui.screens.AddNoteScreen
+import ru.vlyashuk.mapnotes.ui.screens.MainScreen
+import ru.vlyashuk.mapnotes.ui.screens.MapScreen
+import ru.vlyashuk.mapnotes.ui.screens.ProfileScreen
+import ru.vlyashuk.mapnotes.ui.viewmodels.NotesViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 internal fun App() = AppTheme {
@@ -30,10 +35,12 @@ internal fun App() = AppTheme {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
+    val notesViewModel: NotesViewModel = viewModel()
+
     val bottomBarRoutes = listOf(
-        BottomNavDestination.Main.route,
-        BottomNavDestination.Map.route,
-        BottomNavDestination.Profile.route
+        NavDestination.Main.route,
+        NavDestination.Map.route,
+        NavDestination.Profile.route
     )
 
 
@@ -64,15 +71,29 @@ internal fun App() = AppTheme {
 
                 NavHost(
                     navController = navController,
-                    startDestination = BottomNavDestination.Main.route
+                    startDestination = NavDestination.Main.route
                 ) {
-                    composable(BottomNavDestination.Main.route) {
-                        MainScreen()
+                    composable(NavDestination.Main.route) {
+                        MainScreen(
+                            notes = notesViewModel.notes,
+                            onAddClick = {
+                                navController.navigate(NavDestination.AddNote.route)
+                            }
+                        )
                     }
-                    composable(BottomNavDestination.Map.route) {
+                    composable(NavDestination.AddNote.route) {
+                        AddNoteScreen(
+                            onSave = { title, coords, description ->
+                                notesViewModel.addNote(title, coords, description)
+                                navController.popBackStack()
+                            },
+                            onCancel = { navController.popBackStack() }
+                        )
+                    }
+                    composable(NavDestination.Map.route) {
                         MapScreen()
                     }
-                    composable(BottomNavDestination.Profile.route) {
+                    composable(NavDestination.Profile.route) {
                         ProfileScreen()
                     }
                 }
