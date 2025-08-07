@@ -1,4 +1,4 @@
-package ru.vlyashuk.mapnotes.ui_items
+package ru.vlyashuk.mapnotes.ui.ui_items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
