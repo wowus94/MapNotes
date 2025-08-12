@@ -25,27 +25,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import mapnotes.composeapp.generated.resources.Res
-import mapnotes.composeapp.generated.resources.add_notes
 import mapnotes.composeapp.generated.resources.coordinates
 import mapnotes.composeapp.generated.resources.description
+import mapnotes.composeapp.generated.resources.edit_notes
 import mapnotes.composeapp.generated.resources.save
 import mapnotes.composeapp.generated.resources.title
 import org.jetbrains.compose.resources.stringResource
+import ru.vlyashuk.mapnotes.data.ItemNotes
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddNoteScreen(
+fun EditNoteScreen(
+    note: ItemNotes,
     onSave: (String, String, String) -> Unit,
     onCancel: () -> Unit
 ) {
-    var title by remember { mutableStateOf("") }
-    var coordinates by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+
+    var title by remember { mutableStateOf(note.title) }
+    var coordinates by remember { mutableStateOf(note.coordinates) }
+    var description by remember { mutableStateOf(note.description) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Res.string.add_notes)) },
+                title = { Text(stringResource(Res.string.edit_notes)) },
                 navigationIcon = {
                     IconButton(onClick = onCancel) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
