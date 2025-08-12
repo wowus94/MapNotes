@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import mapnotes.composeapp.generated.resources.Res
 import mapnotes.composeapp.generated.resources.add_notes
 import org.jetbrains.compose.resources.stringResource
@@ -35,7 +36,8 @@ import ru.vlyashuk.mapnotes.ui.ui_items.NoteCard
 @Composable
 fun MainScreen(
     notes: List<ItemNotes>,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
+    navController: NavController
 ) {
 
     Scaffold(
@@ -56,7 +58,11 @@ fun MainScreen(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(notes, key = { it.id }) { note ->
-                    NoteCard(note = note)
+                    NoteCard(
+                        note = note,
+                        id = note.id,
+                        navController = navController
+                    )
                 }
             }
         }

@@ -16,19 +16,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import ru.vlyashuk.mapnotes.data.ItemNotes
+import ru.vlyashuk.mapnotes.navigation.NavDestination
 
 @Composable
 fun NoteCard(
+    id: Int,
     note: ItemNotes,
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() },
+            .clickable { navController.navigate(NavDestination.EditNote(id)) },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

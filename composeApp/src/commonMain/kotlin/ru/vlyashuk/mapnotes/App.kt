@@ -16,11 +16,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.vlyashuk.mapnotes.navigation.BottomNavigationBar
 import ru.vlyashuk.mapnotes.navigation.NavDestination
 import ru.vlyashuk.mapnotes.theme.AppTheme
 import ru.vlyashuk.mapnotes.ui.screens.AddNoteScreen
+import ru.vlyashuk.mapnotes.ui.screens.EditNoteScreen
 import ru.vlyashuk.mapnotes.ui.screens.MainScreen
 import ru.vlyashuk.mapnotes.ui.screens.MapScreen
 import ru.vlyashuk.mapnotes.ui.screens.ProfileScreen
@@ -78,7 +80,8 @@ internal fun App() = AppTheme {
                             notes = notesViewModel.notes,
                             onAddClick = {
                                 navController.navigate(NavDestination.AddNote.route)
-                            }
+                            },
+                            navController = navController
                         )
                     }
                     composable(NavDestination.AddNote.route) {
@@ -95,6 +98,20 @@ internal fun App() = AppTheme {
                     }
                     composable(NavDestination.Profile.route) {
                         ProfileScreen()
+                    }
+                    composable<NavDestination.EditNote> { backStackEntry ->
+                        val args = backStackEntry.toRoute<NavDestination.EditNote>()
+                        val note = notesViewModel.notes.firstOrNull { it.id == args.id }
+                        if (note != null) {
+                            EditNoteScreen(
+                                note = note,
+                                onSave = { title, coords, description ->
+                                    notesViewModel.updateNote(note.id, title, coords, description)
+                                    navController.popBackStack()
+                                },
+                                onCancel = { navController.popBackStack() }
+                            )
+                        }
                     }
                 }
             }

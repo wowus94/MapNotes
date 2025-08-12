@@ -20,4 +20,15 @@ class NotesViewModel : ViewModel() {
             )
         )
     }
+
+    fun updateNote(id: Int, title: String, coordinates: String, description: String) {
+        val index = _notes.indexOfFirst { it.id == id }
+        if (index != -1) {
+            _notes[index] = _notes[index].copy(
+                title = title,
+                coordinates = coordinates,
+                description = description
+            )
+        }
+    }
 }
