@@ -31,4 +31,8 @@ class NotesViewModel : ViewModel() {
             )
         }
     }
+
+    fun deleteNote(id: Int) {
+        _notes.removeAll { it.id == id }
+    }
 }
