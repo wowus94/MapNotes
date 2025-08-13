@@ -17,18 +17,29 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mapnotes.composeapp.generated.resources.Res
 import mapnotes.composeapp.generated.resources.add_notes
+import mapnotes.composeapp.generated.resources.cancel
+import mapnotes.composeapp.generated.resources.delete
+import mapnotes.composeapp.generated.resources.delete_note
+import mapnotes.composeapp.generated.resources.delete_note_confirmation
 import org.jetbrains.compose.resources.stringResource
 import ru.vlyashuk.mapnotes.data.ItemNotes
 import ru.vlyashuk.mapnotes.ui.ui_items.NoteCard
@@ -37,14 +48,17 @@ import ru.vlyashuk.mapnotes.ui.ui_items.NoteCard
 fun MainScreen(
     notes: List<ItemNotes>,
     onAddClick: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    onDeleteClick: (Int) -> Unit
 ) {
+
+    var noteToDeleteId by remember { mutableStateOf<Int?>(null) }
 
     Scaffold(
         floatingActionButton = {
             CustomFloatingActionButton(
                 visible = true,
-                onClick = {
+                onAddClick = {
                     onAddClick()
                 },
             )
@@ -56,12 +70,35 @@ fun MainScreen(
                 .background(color = MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            if (noteToDeleteId != null) {
+                AlertDialog(
+                    onDismissRequest = { noteToDeleteId = null },
+                    title = { Text(stringResource(Res.string.delete_note)) },
+                    text = { Text(stringResource(Res.string.delete_note_confirmation)) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            onDeleteClick(noteToDeleteId!!)
+                            noteToDeleteId = null
+                        }) {
+                            Text(stringResource(Res.string.delete), color = Color.Red)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { noteToDeleteId = null }) {
+                            Text(stringResource(Res.string.cancel))
+                        }
+                    }
+                )
+            }
+
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(notes, key = { it.id }) { note ->
                     NoteCard(
                         note = note,
                         id = note.id,
-                        navController = navController
+                        navController = navController,
+                        onDeleteClick = { noteToDeleteId = note.id },
                     )
                 }
             }
@@ -72,7 +109,7 @@ fun MainScreen(
 @Composable
 fun CustomFloatingActionButton(
     visible: Boolean,
-    onClick: () -> Unit
+    onAddClick: () -> Unit
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -92,7 +129,7 @@ fun CustomFloatingActionButton(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
-                    onClick()
+                    onAddClick()
                 },
             contentAlignment = Alignment.Center
         ) {

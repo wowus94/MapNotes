@@ -81,7 +81,10 @@ internal fun App() = AppTheme {
                             onAddClick = {
                                 navController.navigate(NavDestination.AddNote.route)
                             },
-                            navController = navController
+                            navController = navController,
+                            onDeleteClick = { id ->
+                                notesViewModel.deleteNote(id)
+                            }
                         )
                     }
                     composable(NavDestination.AddNote.route) {
