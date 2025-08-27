@@ -23,13 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.vlyashuk.mapnotes.data.ItemNotes
 import ru.vlyashuk.mapnotes.navigation.NavDestination
 
 @Composable
 fun NoteCard(
     id: Int,
-    note: ItemNotes,
+    note: ru.vlyashuk.mapnotes.db.ItemNotes,
     modifier: Modifier = Modifier,
     navController: NavController,
     onDeleteClick: () -> Unit
@@ -38,7 +37,7 @@ fun NoteCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { navController.navigate(NavDestination.EditNote(id)) },
+            .clickable { navController.navigate(NavDestination.EditNote(id.toLong())) },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -63,7 +62,7 @@ fun NoteCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = note.description,
+                    text = note.description ?: "",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

@@ -41,12 +41,11 @@ import mapnotes.composeapp.generated.resources.delete
 import mapnotes.composeapp.generated.resources.delete_note
 import mapnotes.composeapp.generated.resources.delete_note_confirmation
 import org.jetbrains.compose.resources.stringResource
-import ru.vlyashuk.mapnotes.data.ItemNotes
 import ru.vlyashuk.mapnotes.ui.ui_items.NoteCard
 
 @Composable
 fun MainScreen(
-    notes: List<ItemNotes>,
+    notes: List<ru.vlyashuk.mapnotes.db.ItemNotes>,
     onAddClick: () -> Unit,
     navController: NavController,
     onDeleteClick: (Int) -> Unit
@@ -96,9 +95,9 @@ fun MainScreen(
                 items(notes, key = { it.id }) { note ->
                     NoteCard(
                         note = note,
-                        id = note.id,
+                        id = note.id.toInt(),
                         navController = navController,
-                        onDeleteClick = { noteToDeleteId = note.id },
+                        onDeleteClick = { noteToDeleteId = note.id.toInt() },
                     )
                 }
             }

@@ -31,12 +31,11 @@ import mapnotes.composeapp.generated.resources.edit_notes
 import mapnotes.composeapp.generated.resources.save
 import mapnotes.composeapp.generated.resources.title
 import org.jetbrains.compose.resources.stringResource
-import ru.vlyashuk.mapnotes.data.ItemNotes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(
-    note: ItemNotes,
+    note: ru.vlyashuk.mapnotes.db.ItemNotes,
     onSave: (String, String, String) -> Unit,
     onCancel: () -> Unit
 ) {
@@ -78,7 +77,7 @@ fun EditNoteScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
-                value = description,
+                value = description ?: "",
                 onValueChange = { description = it },
                 label = { Text(stringResource(Res.string.description)) },
                 modifier = Modifier.fillMaxWidth()
@@ -87,7 +86,7 @@ fun EditNoteScreen(
             Button(
                 onClick = {
                     if (title.isNotBlank() && coordinates.isNotBlank()) {
-                        onSave(title, coordinates, description)
+                        onSave(title, coordinates, description ?: "")
                     }
                 },
                 modifier = Modifier.fillMaxWidth()

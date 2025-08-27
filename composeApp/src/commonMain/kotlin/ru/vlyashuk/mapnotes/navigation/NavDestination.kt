@@ -18,5 +18,5 @@ sealed class NavDestination(val route: String) {
     object AddNote : NavDestination("add_note")
 
     @Serializable
-    data class EditNote(val id: Int)
+    data class EditNote(val id: Long)
 }

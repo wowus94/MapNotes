@@ -1,0 +1,23 @@
+
+CREATE TABLE ItemNotes (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    coordinates TEXT NOT NULL,
+    description TEXT
+);
+
+selectAll:
+SELECT * FROM ItemNotes;
+
+insertNote:
+INSERT INTO ItemNotes(title, coordinates, description)
+VALUES (?, ?, ?);
+
+updateNote:
+UPDATE ItemNotes
+SET title = ?, coordinates = ?, description = ?
+WHERE id = ?;
+
+deleteNote:
+DELETE FROM ItemNotes
+WHERE id = ?;
