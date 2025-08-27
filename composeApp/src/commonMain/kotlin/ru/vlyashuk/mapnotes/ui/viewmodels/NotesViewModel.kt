@@ -1,38 +1,43 @@
 package ru.vlyashuk.mapnotes.ui.viewmodels
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import ru.vlyashuk.mapnotes.data.ItemNotes
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import ru.vlyashuk.mapnotes.db.ItemNotes
+import ru.vlyashuk.mapnotes.sql.NotesRepository
 
-class NotesViewModel : ViewModel() {
-    private val _notes = mutableStateListOf<ItemNotes>()
-    val notes: List<ItemNotes> = _notes
+class NotesViewModel(
+    private val repository: NotesRepository
+) : ViewModel() {
 
-    private var nextId = 0
+    val notes: StateFlow<List<ItemNotes>> =
+        repository.getAllNotes()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList()
+            )
 
     fun addNote(title: String, coordinates: String, description: String) {
-        _notes.add(
-            ItemNotes(
-                id = nextId++,
-                title = title,
-                coordinates = coordinates,
-                description = description
-            )
-        )
-    }
-
-    fun updateNote(id: Int, title: String, coordinates: String, description: String) {
-        val index = _notes.indexOfFirst { it.id == id }
-        if (index != -1) {
-            _notes[index] = _notes[index].copy(
-                title = title,
-                coordinates = coordinates,
-                description = description
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addNote(title, coordinates, description)
         }
     }
 
-    fun deleteNote(id: Int) {
-        _notes.removeAll { it.id == id }
+    fun updateNote(id: Long, title: String, coordinates: String, description: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateNote(id, title, coordinates, description)
+        }
+    }
+
+    fun deleteNote(id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteNote(id)
+        }
     }
 }

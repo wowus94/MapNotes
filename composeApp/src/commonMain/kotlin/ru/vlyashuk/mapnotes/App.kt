@@ -9,15 +9,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import ru.vlyashuk.mapnotes.navigation.BottomNavigationBar
 import ru.vlyashuk.mapnotes.navigation.NavDestination
 import ru.vlyashuk.mapnotes.theme.AppTheme
@@ -37,7 +38,9 @@ internal fun App() = AppTheme {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val notesViewModel: NotesViewModel = viewModel()
+    val notesViewModel = koinInject<NotesViewModel>()
+
+    val notes by notesViewModel.notes.collectAsState()
 
     val bottomBarRoutes = listOf(
         NavDestination.Main.route,
@@ -77,13 +80,13 @@ internal fun App() = AppTheme {
                 ) {
                     composable(NavDestination.Main.route) {
                         MainScreen(
-                            notes = notesViewModel.notes,
+                            notes = notes,
                             onAddClick = {
                                 navController.navigate(NavDestination.AddNote.route)
                             },
                             navController = navController,
                             onDeleteClick = { id ->
-                                notesViewModel.deleteNote(id)
+                                notesViewModel.deleteNote(id.toLong())
                             }
                         )
                     }
@@ -104,7 +107,7 @@ internal fun App() = AppTheme {
                     }
                     composable<NavDestination.EditNote> { backStackEntry ->
                         val args = backStackEntry.toRoute<NavDestination.EditNote>()
-                        val note = notesViewModel.notes.firstOrNull { it.id == args.id }
+                        val note = notes.firstOrNull { it.id == args.id }
                         if (note != null) {
                             EditNoteScreen(
                                 note = note,
